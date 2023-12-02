@@ -46,11 +46,12 @@ defmodule Day2 do
   def parse_game(line) do
     game_id_regex = ~r"Game \d+"
 
-    samples =
+    vals =
       line
       |> String.split(":")
       |> List.last()
       |> String.split(";")
+      |> Enum.map(&parse_sample/1)
 
     {id, _} =
       Regex.run(game_id_regex, line)
@@ -58,9 +59,6 @@ defmodule Day2 do
       |> String.split()
       |> List.last()
       |> Integer.parse()
-
-    vals =
-      samples |> Enum.map(&parse_sample/1)
 
     {id, vals}
   end
@@ -80,13 +78,11 @@ defmodule Day2 do
   defp get_color_val(str, regex) do
     case Regex.run(regex, str) do
       [h | _] ->
-        {n, _} =
-          h
-          |> String.split()
-          |> List.first()
-          |> Integer.parse()
-
-        n
+        h
+        |> String.split()
+        |> List.first()
+        |> Integer.parse()
+        |> elem(0)
 
       _ ->
         0
