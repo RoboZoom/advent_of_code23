@@ -44,8 +44,6 @@ defmodule Day2 do
   end
 
   def parse_game(line) do
-    game_id_regex = ~r"Game \d+"
-
     vals =
       line
       |> String.split(":")
@@ -54,7 +52,7 @@ defmodule Day2 do
       |> Enum.map(&parse_sample/1)
 
     {id, _} =
-      Regex.run(game_id_regex, line)
+      Regex.run(~r"Game \d+", line)
       |> List.first()
       |> String.split()
       |> List.last()
