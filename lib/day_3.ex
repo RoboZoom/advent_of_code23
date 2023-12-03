@@ -1,11 +1,10 @@
 defmodule Day3 do
   def d3_a() do
-    # file = File.read!("assets/day_three_input.txt")
     file =
       File.read!("assets/day_three_input.txt") |> String.split("\n") |> Enum.map(&String.trim(&1))
 
     symbol_coords = get_symbol_coords(file)
-    number_info = get_number_info(file) |> List.flatten() |> IO.inspect(label: "Number Info")
+    number_info = get_number_info(file) |> List.flatten()
 
     Enum.reduce(number_info, 0, fn num, sum ->
       if is_adjacent(num, symbol_coords) do
@@ -17,11 +16,10 @@ defmodule Day3 do
   end
 
   def d3_b() do
-    # file = File.read!("assets/day_three_input.txt")
     file =
       File.read!("assets/day_three_input.txt") |> String.split("\n") |> Enum.map(&String.trim(&1))
 
-    symbol_coords = get_asteriks_coords(file) |> IO.inspect(label: "Asteriks Coords")
+    symbol_coords = get_asteriks_coords(file)
     number_info = get_number_info(file) |> List.flatten()
 
     Enum.map(symbol_coords, &adjacent_twice_val(&1, number_info))
@@ -33,15 +31,12 @@ defmodule Day3 do
       l =
         Regex.scan(~r"(?!(\.|\d)+).", line, return: :index)
         |> List.flatten()
-        |> IO.inspect()
         |> Enum.map(&elem(&1, 0))
-        |> IO.inspect()
         |> Enum.map(fn index ->
           {row, index}
         end)
         |> List.flatten()
         |> Enum.concat(vals)
-        |> IO.inspect(label: "Vals after row #{row}")
 
       {row + 1, l}
     end)
@@ -59,7 +54,6 @@ defmodule Day3 do
         end)
         |> List.flatten()
         |> Enum.concat(vals)
-        |> IO.inspect(label: "Vals after row #{row}")
 
       {row + 1, l}
     end)
@@ -74,7 +68,6 @@ defmodule Day3 do
       indices =
         Regex.scan(num_capture, line, return: :index)
         |> List.flatten()
-        # |> IO.inspect(label: "Number Info")
         |> Enum.map(&elem(&1, 0))
 
       z_map =
@@ -100,7 +93,7 @@ defmodule Day3 do
     end
   end
 
-  defp is_adjacent(%{coord: coord, length: l} = num_item, symbols) do
+  defp is_adjacent(%{coord: coord, length: l} = _num_item, symbols) do
     y = elem(coord, 0)
     min_y = (y - 1) |> check_zero()
     max_y = y + 1
@@ -117,7 +110,7 @@ defmodule Day3 do
     end)
   end
 
-  defp adjacent_twice_val({row, index} = symbol, num_items) do
+  defp adjacent_twice_val({row, index} = _symbol, num_items) do
     {adj, prod} =
       Enum.reduce(num_items, {0, 1}, fn %{coord: coord, length: l, number: n} = _number,
                                         {count, product} = totals ->
