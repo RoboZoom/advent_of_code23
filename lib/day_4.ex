@@ -14,11 +14,8 @@ defmodule Day4 do
     # File.stream!("assets/test.txt")
     |> Enum.map(&parse_ticket_better/1)
     |> Map.new()
-    |> IO.inspect()
     |> make_winner_map()
-    # |> increment_index(1, 1)
-    |> execute_scratch_map(1)
-    # |> IO.inspect(label: "Ex complete")
+    |> execute_scratch_map()
     |> Map.values()
     |> Enum.map(& &1.total_execution)
     |> Enum.sum()
@@ -75,7 +72,6 @@ defmodule Day4 do
           b |> String.trim() |> Integer.parse() |> elem(0)
         end)
       end)
-      |> IO.inspect()
 
     game_number =
       split_ticket
@@ -86,15 +82,12 @@ defmodule Day4 do
       |> String.trim()
       |> Integer.parse()
       |> elem(0)
-      |> IO.inspect()
 
-    # Enum.into(%{}, {game_number, {List.first(matches), List.last(matches)}})
     {game_number,
      %Scratcher{winners: List.first(matches), chosen: List.last(matches), game_id: game_number}}
   end
 
   def recurse_count(all_tickets, index) do
-    # IO.puts("Game #{index}:")
     my_ticket = Map.fetch!(all_tickets, index)
     winners = num_matches(my_ticket)
 
@@ -105,12 +98,9 @@ defmodule Day4 do
       _ ->
         child_wins =
           Enum.to_list(1..winners)
-          # |> IO.inspect()
           |> Enum.map(fn a ->
-            # {a, index} |> IO.inspect()
             recurse_count(all_tickets, index + a)
           end)
-          # |> IO.inspect(label: "Output - Game #{index}")
           |> Enum.sum()
 
         winners + child_wins
@@ -129,7 +119,7 @@ defmodule Day4 do
     end)
   end
 
-  def execute_scratch_map(scratchers, index) do
+  def execute_scratch_map(scratchers) do
     scratchers
     |> Map.values()
     |> Enum.sort(&scratcher_sort/2)
@@ -143,7 +133,6 @@ defmodule Day4 do
       if m > 0 do
         Enum.to_list(1..m)
         |> Enum.reduce(sk, &increment_index(&2, g + &1, ex))
-        |> IO.inspect(label: "Completed Increment")
       else
         sk
       end
@@ -155,13 +144,9 @@ defmodule Day4 do
   end
 
   defp increment_index(scratchers, index, count) do
-    IO.puts("Increment Vals: #{index} - #{count}")
-
     Map.update!(scratchers, index, fn %{total_execution: tex} = x ->
-      # IO.puts("Total Prior: #{tex}")
-      # IO.puts("Count: #{count}")
       new_ex = tex + count
-      %{x | total_execution: new_ex} |> IO.inspect()
+      %{x | total_execution: new_ex}
     end)
   end
 
@@ -172,7 +157,5 @@ defmodule Day4 do
         false -> points
       end
     end)
-
-    # |> IO.inspect(label: "Total Winners")
   end
 end
