@@ -16,39 +16,7 @@ defmodule Day15 do
 
     init_box = init_boxes()
 
-    lens_map =
-      Enum.reduce(directions, init_box, fn item, boxes ->
-        hash = item.label |> get_hash()
-
-        IO.inspect(item, label: "Item")
-
-        case item.op do
-          :remove ->
-            Map.update!(boxes, hash, fn a ->
-              ind = Enum.find_index(a, &(&1.label == item.label))
-
-              if(ind) do
-                List.delete_at(a, ind)
-              else
-                a
-              end
-            end)
-
-          :add ->
-            Map.update!(boxes, hash, fn a ->
-              ind = Enum.find_index(a, &(&1.label == item.label))
-
-              if(ind) do
-                List.replace_at(a, ind, item)
-              else
-                List.insert_at(a, -1, item)
-              end
-            end)
-        end
-      end)
-
-    
-    lens_map
+    make_lens_map(directions, init_box)
     |> Enum.filter(&(elem(&1, 1) != []))
     |> IO.inspect(label: "Lens Map")
     |> Enum.into([], fn {key, val} ->
@@ -66,6 +34,38 @@ defmodule Day15 do
 
   def get_test_data(true), do: "assets/test.txt"
   def get_test_data(false), do: "assets/day_15_input.txt"
+
+  def make_lens_map(directions, init_boxes) do
+    Enum.reduce(directions, init_boxes, fn item, boxes ->
+      hash = item.label |> get_hash()
+
+      IO.inspect(item, label: "Item")
+
+      case item.op do
+        :remove ->
+          Map.update!(boxes, hash, fn a ->
+            ind = Enum.find_index(a, &(&1.label == item.label))
+
+            if(ind) do
+              List.delete_at(a, ind)
+            else
+              a
+            end
+          end)
+
+        :add ->
+          Map.update!(boxes, hash, fn a ->
+            ind = Enum.find_index(a, &(&1.label == item.label))
+
+            if(ind) do
+              List.replace_at(a, ind, item)
+            else
+              List.insert_at(a, -1, item)
+            end
+          end)
+      end
+    end)
+  end
 
   def get_hash(data) do
     data
