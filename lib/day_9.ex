@@ -46,7 +46,7 @@ defmodule Day9 do
     if Enum.all?(new_row, &(&1 == 0)) do
       new_row
     else
-     [new_row | build_row(new_row)]
+      [new_row | build_row(new_row)]
     end
   end
 

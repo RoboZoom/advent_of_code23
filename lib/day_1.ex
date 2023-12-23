@@ -71,5 +71,4 @@ defmodule Day1 do
         y
     end
   end
-
 end

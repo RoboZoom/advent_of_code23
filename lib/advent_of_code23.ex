@@ -5,12 +5,12 @@ defmodule AdventOfCode23 do
 
   @doc """
   Hello world.
-
+  
   ## Examples
-
+  
       iex> AdventOfCode23.hello()
       :world
-
+  
   """
   def hello do
     :world
