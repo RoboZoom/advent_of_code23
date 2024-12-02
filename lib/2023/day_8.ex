@@ -78,7 +78,7 @@ defmodule Day8 do
     end
   end
 
-  def do_b(%{directions: d, path: p} = s) do
+  def do_b(%{directions: _d, path: p} = s) do
     start = get_all_x(p, "A") |> IO.inspect(label: "A Starters")
     multi_nav_two(s, {start, 0})
   end
@@ -100,7 +100,7 @@ defmodule Day8 do
     end
   end
 
-  def multi_nav_two(%{directions: d, path: p} = a, {start, index}) do
+  def multi_nav_two(%{directions: d, path: p} = _a, {start, _index}) do
     Enum.map(start, fn a ->
       {:ok, val} = navigate_end(%{directions: d, path: p}, {a, 0})
       val
@@ -119,7 +119,7 @@ defmodule Day8 do
     String.at(item, 2) == key
   end
 
-  def large_gcd([h | t] = arr) do
+  def large_gcd([h | t] = _arr) do
     case t do
       [] -> h |> IO.inspect()
       _ -> Integer.gcd(h, large_gcd(t))
