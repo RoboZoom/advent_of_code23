@@ -13,10 +13,8 @@ defmodule TwentyFour.D02 do
     fetch_data(true)
     |> parse_input()
     |> Enum.map(&check_safe_b(&1))
-
-    # |> Enum.filter(&check_for_safety(&1))
-
-    # |> Enum.count()
+    |> Enum.filter(&check_for_safety(&1))
+    |> Enum.count()
   end
 
   defp fetch_data(test) when test == false, do: File.stream!("assets/2024/d02/compute_input.txt")
@@ -37,7 +35,7 @@ defmodule TwentyFour.D02 do
         {safety, previous, new_sign, flag}
 
       sign == :equal or sign !== new_sign ->
-        # IO.puts("Sign Check Failed")
+        IO.puts("Sign Check Failed")
         {safety, previous, sign, 1}
 
       sign == new_sign ->
@@ -53,12 +51,12 @@ defmodule TwentyFour.D02 do
         acc
 
       d <= 0 or d > 3 ->
-        # IO.puts("Gradient Check Failed")
+        IO.puts("Gradient Check Failed - #{d}")
         {safety, previous, sign, 1}
     end
   end
 
-  defp replace_previous({:strike, a, b, _}, _new_prev), do: {:strike, a, b, 0}
+  defp replace_previous({_, _, _, 1} = acc, _new_prev), do: acc
   defp replace_previous({a, _, b, _}, new_prev), do: {a, new_prev, b, 0}
 
   defp check_for_safety({:unsafe, _, _, _}), do: false
@@ -138,8 +136,8 @@ defmodule TwentyFour.D02 do
             acc
             |> check_sign(new_sign)
             |> check_gradient(diff)
-            |> resolve_unsafe_flag_b()
             |> replace_previous(num)
+            |> resolve_unsafe_flag_b()
         end
       end)
 
@@ -178,8 +176,8 @@ defmodule TwentyFour.D02 do
               acc
               |> check_sign(new_sign)
               |> check_gradient(diff)
-              |> resolve_unsafe_flag_b()
               |> replace_previous(num)
+              |> resolve_unsafe_flag_b()
           end
         end)
 
