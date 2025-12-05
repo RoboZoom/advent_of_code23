@@ -82,35 +82,38 @@ defmodule TwentyFive.Day1 do
 
     hundreds_interval = new_h - old_h
 
-    sign = cond do
-      new - old >= 0 -> "+"
-      true -> "-"
-    end
+    sign =
+      cond do
+        new - old >= 0 -> "+"
+        true -> "-"
+      end
+
     # IO.puts("Old: #{old} New: #{new} Sign: #{sign}")
 
     case sign do
       "+" ->
         hundreds_interval
-    "-" ->
-      h = abs(hundreds_interval)
-      m = 0
 
-      m =
-        if check_on_zero(old) do
-          m - 1
-        else
-          m
-        end
+      "-" ->
+        h = abs(hundreds_interval)
+        m = 0
 
-      m =
-        if check_on_zero(new) do
-          m + 1
-        else
-          m
-        end
+        m =
+          if check_on_zero(old) do
+            m - 1
+          else
+            m
+          end
 
-      # IO.inspect(m, label: "m")
-      h + m
+        m =
+          if check_on_zero(new) do
+            m + 1
+          else
+            m
+          end
+
+        # IO.inspect(m, label: "m")
+        h + m
     end
 
     # old_h !== new_h and not check_on_zero(old)
