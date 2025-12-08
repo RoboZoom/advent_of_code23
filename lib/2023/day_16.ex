@@ -20,12 +20,12 @@ defmodule Day16 do
     |> Enum.map(&String.graphemes/1)
   end
 
-  def build_grid(two_d_arr) do
-    Enum.reduce(two_d_arr, {0, []}, fn row, {x_index, rows} ->
-      Enum.reduce(row, {0, []}, fn el, {y_index, items} ->
-        nil
-      end)
-    end)
+  def build_grid(_two_d_arr) do
+    # Enum.reduce(two_d_arr, {0, []}, fn row, {_x_index, rows} ->
+    #   Enum.reduce(row, {0, []}, fn el, {_y_index, _items} ->
+    #     nil
+    #   end)
+    # end)
   end
 
   def get_test_data(true), do: "assets/test.txt"

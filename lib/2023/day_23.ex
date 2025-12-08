@@ -50,7 +50,7 @@ defmodule Day23 do
 
   def get_valid_moves(chart, {x, y} = coord) do
     # IO.puts("Checking {#{x}, #{y}}")
-    {:ok, here} = get_coord_val(chart, coord)
+    {:ok, _here} = get_coord_val(chart, coord)
 
     op_list = [{x, y + 1}, {x, y - 1}, {x + 1, y}, {x - 1, y}]
     # case here.val do

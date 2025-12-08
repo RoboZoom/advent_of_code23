@@ -27,7 +27,7 @@ defmodule Day3 do
   end
 
   defp get_symbol_coords(grid) do
-    Enum.reduce(grid, {0, []}, fn line, {row, vals} = acc ->
+    Enum.reduce(grid, {0, []}, fn line, {row, vals} = _acc ->
       l =
         Regex.scan(~r"(?!(\.|\d)+).", line, return: :index)
         |> List.flatten()
@@ -44,7 +44,7 @@ defmodule Day3 do
   end
 
   defp get_asteriks_coords(grid) do
-    Enum.reduce(grid, {0, []}, fn line, {row, vals} = acc ->
+    Enum.reduce(grid, {0, []}, fn line, {row, vals} = _acc ->
       l =
         Regex.scan(~r"\*", line, return: :index)
         |> List.flatten()

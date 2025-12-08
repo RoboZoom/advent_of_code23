@@ -86,7 +86,7 @@ defmodule Day5 do
 
   def check_seed_ranges({seeds, maps}) do
     make_seed_pairs(seeds)
-    |> IO.inspect(label: "Seed Pairs")
+    # |> IO.inspect(label: "Seed Pairs")
     |> Enum.map(fn {start, range} ->
       top = start + range
 
@@ -141,7 +141,7 @@ defmodule Day5 do
   def traverse(seed, maps) do
     Enum.reduce(maps, seed, fn map, val ->
       case Enum.find(map, &check_bounds(val, &1.source, &1.size)) do
-        %{source: s, size: size, destination: d} ->
+        %{source: s, size: _size, destination: d} ->
           x = val - s
           d + x
 
@@ -154,7 +154,7 @@ defmodule Day5 do
   def reverse_traversal(location, reversed_maps) do
     Enum.reduce(reversed_maps, location, fn map, val ->
       case Enum.find(map, &check_bounds(val, &1.destination, &1.size)) do
-        %{source: s, size: size, destination: d} ->
+        %{source: s, size: _size, destination: d} ->
           x = val - d
           s + x
 
