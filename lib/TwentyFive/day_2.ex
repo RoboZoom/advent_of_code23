@@ -15,7 +15,7 @@ defmodule TwentyFive.Day2 do
     fetch_data(test_data)
     |> parse_data()
     |> Enum.map(&get_repeats/1)
-    |> Enum.filter(&(&1 !== nil))
+    |> IO.inspect(label: "Pre-arranged List")
     |> List.flatten()
     |> Enum.filter(&(&1 !== nil))
     |> IO.inspect(label: "Final List")
@@ -44,17 +44,53 @@ defmodule TwentyFive.Day2 do
   end
 
   def get_repeats({lower, upper} = input) when is_binary(lower) do
-    digit_range = get_digit_range(upper)
+
+    l_digits = String.length(lower) |> check_len()
+    h_digits = String.length(upper)
+
+    cond do
+      l_digits == h_digits and l_digits > 1 ->
+        get_repeats_same_digits(input)
+
+      l_digits !== h_digits and h_digits > 1 ->
+        # IO.puts("Phase 2 Called")
+        init = get_repeats_same_digits({lower, nines(l_digits)})
+        start = l_digits + 1
+
+        Enum.reduce(start..h_digits, init, fn digits, acc ->
+          top =
+            if digits == h_digits do
+              upper
+            else
+              nines(digits)
+            end
+
+          [get_repeats_same_digits({digit_start(digits), top}) | acc]
+        end)
+
+      true ->
+        []
+    end
+    |> MapSet.new()
+    |> MapSet.to_list()
+    # |> IO.inspect()
   end
 
-  def get_repeats_same_digits({lower, upper} = input) do
+  def check_len(1), do: 2
+  def check_len(x), do: x
+
+  def get_repeats_same_digits({lower, upper}) do
+
     digit_range = get_digit_range(upper)
     total_digits = String.length(upper)
     {l, _} = Integer.parse(lower)
     {h, _} = Integer.parse(upper)
 
     Enum.reduce(digit_range, [], fn digits, acc ->
-      if rem(total_digits, digits) == 0 do
+
+      digit_divisor = rem(total_digits, digits) == 0
+      if digit_divisor do
+
         total_patterns = Integer.floor_div(total_digits, digits)
         start_pattern = String.slice(lower, 0..(digits - 1))
 
@@ -73,15 +109,20 @@ defmodule TwentyFive.Day2 do
         acc
       end
     end)
+
   end
 
   defp reduce_n_pattern(start_pattern, initial_list, upper) do
+    IO.puts("Reducing N Pattern: {#{start_pattern}, #{initial_list}, #{upper}}")
     upper_bound = get_upper_bound_from_pattern(start_pattern, upper)
-    len = String.length(start_pattern)
+    len = String.length(Integer.to_string(upper))
+    pattern_repeats = Integer.floor_div(len, String.length(start_pattern))
+
     {start_int, _} = Integer.parse(start_pattern)
 
     Enum.reduce_while(start_int..upper_bound, initial_list, fn num, acc ->
-      test_num = n_pattern_repeat_num(Integer.to_string(num), len)
+      test_num = n_pattern_repeat_num(Integer.to_string(num), pattern_repeats)
+      IO.puts("Test Num: #{test_num} | Number: #{num} | Pattern Repeats: #{pattern_repeats}")
 
       cond do
         test_num <= upper ->
@@ -90,7 +131,7 @@ defmodule TwentyFive.Day2 do
         true ->
           {:halt, acc}
       end
-    end)
+    end) |> IO.inspect()
   end
 
   def get_upper_bound_from_pattern(pattern, upper) do
@@ -102,15 +143,20 @@ defmodule TwentyFive.Day2 do
 
   defp get_digit_range(num) do
     half_l = Integer.floor_div(String.length(num), 2)
-    1..half_l
+    if half_l == 0 do
+      1..1
+    else
+      1..half_l
+    end
+
   end
 
-  defp n_pattern_repeat(pattern, n) when is_binary(pattern) do
+  def n_pattern_repeat(pattern, n) when is_binary(pattern) do
     1..n
     |> Enum.to_list()
     |> Enum.map(fn _x -> pattern end)
     |> Enum.reduce("", fn el, acc ->
-      acc <> Integer.to_string(el)
+      acc <> el
     end)
   end
 
