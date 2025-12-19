@@ -13,61 +13,89 @@ defmodule TwentyFive.Day6 do
 
     fetch_data(test_data)
     |> parse_coarse()
+    |> IO.inspect(label: "Parsed")
     |> create_vertical_problem()
+    |> IO.inspect(label: "Problems Created")
     |> Enum.map(&solve_problem/1)
     |> Enum.sum()
   end
 
   def create_vertical_problem(input) do
-    len = length(List.first(input))
-    [ops | numbers] = Enum.reverse(input) |> Enum.map(&String.graphemes/1)
+    len = String.length(Enum.fetch!(input, 0))
+
+    [ops | numbers] =
+      input
+      |> Enum.map(&String.graphemes/1)
+      |> Enum.reverse()
+      |> IO.inspect()
+
     # numbers = Enum.reverse(numbers_reversed)
 
-    Enum.reduce(
-      0..(len - 1),
-      %{
-        built_problems: [],
-        current_problem: {"", []}
-      },
-      fn ind, acc ->
-        chars =
-          Enum.reduce(numbers, [], fn row, list ->
-            [Enum.at(row, ind) | list]
-          end)
+    result =
+      Enum.reduce(
+        0..(len - 1),
+        %{
+          built_problems: [],
+          current_problem: {"", []}
+        },
+        fn ind, acc ->
+          chars =
+            Enum.reduce(numbers, [], fn row, list ->
+              [Enum.at(row, ind) | list]
+            end)
 
-        case Enum.all?(chars, fn a -> a == " " end) do
-          false ->
-            {i, _} = Integer.parse(Enum.join(chars))
-            {op, map} = acc
+          case Enum.all?(chars, fn a -> a == " " end) do
+            false ->
+              {i, _} =
+                chars
+                |> Enum.join()
+                |> String.trim()
+                |> Integer.parse()
 
-            b =
-              Map.update!(map, :current_problem, fn a ->
-                [i | a]
-              end)
+              b =
+                Map.update!(acc, :current_problem, fn {o, a} ->
+                  {o, [i | a]}
+                end)
 
-            o = Enum.at(ops, ind)
+              o = Enum.at(ops, ind)
 
-            cond do
-              o == " " ->
-                {op, b}
+              cond do
+                o == " " or o == nil ->
+                  b
 
-              true ->
-                {o, b}
-            end
+                true ->
+                  Map.update!(b, :current_problem, fn {_old_op, n} ->
+                    {o, n}
+                  end)
+              end
 
-          true ->
-            %{
-              current_problem: {c, nums},
-              built_problems: b
-            } = acc
+            true ->
+              %{
+                current_problem: {c, nums},
+                built_problems: b
+              } = acc
 
-            %{
-              current_problem: {"", []},
-              built_problems: [[c | nums] | b]
-            }
+              %{
+                current_problem: {"", []},
+                built_problems: [[c | nums] | b]
+              }
+              |> IO.inspect()
+          end
         end
-      end
-    )
+      )
+
+    case result.current_problem do
+      {"", []} ->
+        result.built_problems
+
+      _ ->
+        %{
+          current_problem: {c, nums},
+          built_problems: b
+        } = result
+
+        [[c | nums] | b]
+    end
   end
 
   def parse_data(input_stream) do
